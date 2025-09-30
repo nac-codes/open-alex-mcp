@@ -76,7 +76,7 @@ This will:
 3. Open the MCP Inspector in your browser
 4. Allow you to test all available tools interactively
 
-When prompted, start your local server with `npm run dev` and connect to it through the inspector.
+When prompted, start your local server with `npm run dev` and connect to it through the inspector by pasting the url with the mcp endpoint.
 
 ## Available Tools
 
