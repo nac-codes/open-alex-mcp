@@ -25,15 +25,21 @@ export class OpenAlexMCP extends McpAgent {
 				filter: z.string().optional().describe("Filter string (e.g., 'publication_year:2023,is_oa:true')"),
 				sort: z.string().optional().describe("Sort field (e.g., 'cited_by_count:desc')"),
 				per_page: z.number().optional().default(10).describe("Number of results per page (default: 10, max: 200)"),
+				verbose: z.boolean().optional().default(false).describe("Return full details (default: false, returns concise results)"),
 			},
-			async ({ query, filter, sort, per_page }) => {
+			async ({ query, filter, sort, per_page, verbose }) => {
 				try {
 					const mailto = (this.env as Env)?.OPENALEX_EMAIL;
+
+					// Concise mode by default - only return essential fields
+					const select = verbose ? undefined : "id,doi,display_name,publication_year,publication_date,authorships,open_access,cited_by_count,primary_topic,biblio";
+
 					const params = {
 						search: query,
 						filter,
 						sort,
 						per_page,
+						select,
 						mailto,
 					};
 
@@ -65,15 +71,21 @@ export class OpenAlexMCP extends McpAgent {
 				filter: z.string().optional().describe("Filter string (e.g., 'last_known_institution.id:I136199984')"),
 				sort: z.string().optional().describe("Sort field (e.g., 'works_count:desc')"),
 				per_page: z.number().optional().default(10).describe("Number of results per page (default: 10, max: 200)"),
+				verbose: z.boolean().optional().default(false).describe("Return full details (default: false, returns concise results)"),
 			},
-			async ({ query, filter, sort, per_page }) => {
+			async ({ query, filter, sort, per_page, verbose }) => {
 				try {
 					const mailto = (this.env as Env)?.OPENALEX_EMAIL;
+
+					// Concise mode by default - only return essential fields
+					const select = verbose ? undefined : "id,display_name,orcid,works_count,cited_by_count,last_known_institutions";
+
 					const params = {
 						search: query,
 						filter,
 						sort,
 						per_page,
+						select,
 						mailto,
 					};
 
@@ -105,15 +117,21 @@ export class OpenAlexMCP extends McpAgent {
 				filter: z.string().optional().describe("Filter string (e.g., 'country_code:US')"),
 				sort: z.string().optional().describe("Sort field (e.g., 'works_count:desc')"),
 				per_page: z.number().optional().default(10).describe("Number of results per page (default: 10, max: 200)"),
+				verbose: z.boolean().optional().default(false).describe("Return full details (default: false, returns concise results)"),
 			},
-			async ({ query, filter, sort, per_page }) => {
+			async ({ query, filter, sort, per_page, verbose }) => {
 				try {
 					const mailto = (this.env as Env)?.OPENALEX_EMAIL;
+
+					// Concise mode by default - only return essential fields
+					const select = verbose ? undefined : "id,display_name,country_code,works_count,cited_by_count,type";
+
 					const params = {
 						search: query,
 						filter,
 						sort,
 						per_page,
+						select,
 						mailto,
 					};
 

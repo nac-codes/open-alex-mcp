@@ -143,11 +143,66 @@ this.server.tool(
 
 ### Current Tools
 
-- `search_works`: Search for papers, articles, books
-- `search_authors`: Search for author profiles
-- `search_institutions`: Search for universities, research institutes
+- `search_works`: Search for papers, articles, books (supports `verbose` parameter)
+- `search_authors`: Search for author profiles (supports `verbose` parameter)
+- `search_institutions`: Search for universities, research institutes (supports `verbose` parameter)
 - `get_work_by_id`: Get detailed work information by OpenAlex ID or DOI
 - `get_author_by_id`: Get detailed author information by OpenAlex ID or ORCID
+
+## Concise Mode (Default Behavior)
+
+**All search tools default to concise mode** to reduce API response size and conserve AI context windows. This is a critical optimization for AI agents working with large result sets.
+
+### How It Works
+
+- By default (`verbose=false`), search tools return only essential fields via OpenAlex's `select` parameter
+- AI clients must explicitly set `verbose=true` to receive full entity details
+- The `get_*_by_id` tools always return full details (no verbose parameter)
+
+### Concise Field Sets
+
+**search_works** (concise):
+```
+id,doi,display_name,publication_year,publication_date,authorships,open_access,cited_by_count,primary_topic,biblio
+```
+
+**search_authors** (concise):
+```
+id,display_name,orcid,works_count,cited_by_count,last_known_institutions
+```
+
+**search_institutions** (concise):
+```
+id,display_name,country_code,works_count,cited_by_count,type
+```
+
+### Implementation Example
+
+When adding a new search tool, follow this pattern:
+
+```typescript
+this.server.tool(
+  "search_entity",
+  {
+    query: z.string().describe("Search query"),
+    verbose: z.boolean().optional().default(false).describe("Return full details (default: false, returns concise results)"),
+  },
+  async ({ query, verbose }) => {
+    const mailto = (this.env as Env)?.OPENALEX_EMAIL;
+
+    // Concise mode by default - only return essential fields
+    const select = verbose ? undefined : "id,display_name,field1,field2";
+
+    const params = { search: query, select, mailto };
+    const apiUrl = QueryBuilder.buildFromParams("entity_type", params);
+    const data = await fetcher.fetchList(apiUrl);
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(data, null, 2) }]
+    };
+  }
+);
+```
 
 ## Connecting to the MCP Server
 
