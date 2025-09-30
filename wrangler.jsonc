@@ -1,0 +1,11 @@
+{
+  // Cloudflare Worker configuration for OpenAlex API wrapper
+  "name": "openalex-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-01-01",
+
+  // Environment variables (optional - for polite pool email)
+  "vars": {
+    "OPENALEX_EMAIL": "nac2197@columbia.edu"
+  }
+}
