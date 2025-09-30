@@ -1,25 +1,25 @@
 {
-  "name": "openalex-worker",
-  "version": "1.0.0",
-  "description": "Cloudflare Worker API wrapper for OpenAlex",
-  "main": "src/index.ts",
-  "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "test": "wrangler dev --test-scheduled"
-  },
-  "keywords": [
-    "openalex",
-    "cloudflare-worker",
-    "api",
-    "academic",
-    "research"
-  ],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241127.0",
-    "wrangler": "^3.94.0",
-    "typescript": "^5.7.3"
-  }
+	"name": "remote-mcp-server-authless",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"format": "biome format --write",
+		"lint:fix": "biome lint --fix",
+		"start": "wrangler dev",
+		"cf-typegen": "wrangler types",
+		"type-check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "1.18.2",
+		"agents": "^0.2.4",
+		"zod": "^3.25.76"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.4",
+		"@types/node": "^24.6.0",
+		"typescript": "5.9.2",
+		"wrangler": "^4.40.3"
+	}
 }

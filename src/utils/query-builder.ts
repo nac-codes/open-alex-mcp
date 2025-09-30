@@ -163,20 +163,6 @@ export class QueryBuilder {
   }
 
   /**
-   * Build autocomplete URL
-   */
-  static buildAutocompleteUrl(
-    entityType: EntityType,
-    query: string,
-    mailto?: string
-  ): string {
-    const url = new URL(`${OPENALEX_BASE_URL}/autocomplete/${entityType}`);
-    if (query) url.searchParams.set('q', query);
-    if (mailto) url.searchParams.set('mailto', mailto);
-    return url.toString();
-  }
-
-  /**
    * Build random entity URL
    */
   static buildRandomUrl(entityType: EntityType, mailto?: string): string {
@@ -184,46 +170,4 @@ export class QueryBuilder {
     if (mailto) url.searchParams.set('mailto', mailto);
     return url.toString();
   }
-}
-
-/**
- * Parse query parameters from URL search params
- */
-export function parseQueryParams(searchParams: URLSearchParams): QueryParams {
-  const params: QueryParams = {};
-
-  const filter = searchParams.get('filter');
-  if (filter) params.filter = filter;
-
-  const search = searchParams.get('search');
-  if (search) params.search = search;
-
-  const sort = searchParams.get('sort');
-  if (sort) params.sort = sort;
-
-  const page = searchParams.get('page');
-  if (page) params.page = parseInt(page, 10);
-
-  const perPage = searchParams.get('per_page') || searchParams.get('per-page');
-  if (perPage) params.per_page = parseInt(perPage, 10);
-
-  const cursor = searchParams.get('cursor');
-  if (cursor) params.cursor = cursor;
-
-  const select = searchParams.get('select');
-  if (select) params.select = select;
-
-  const sample = searchParams.get('sample');
-  if (sample) params.sample = parseInt(sample, 10);
-
-  const seed = searchParams.get('seed');
-  if (seed) params.seed = parseInt(seed, 10);
-
-  const groupBy = searchParams.get('group_by');
-  if (groupBy) params.group_by = groupBy;
-
-  const mailto = searchParams.get('mailto');
-  if (mailto) params.mailto = mailto;
-
-  return params;
 }

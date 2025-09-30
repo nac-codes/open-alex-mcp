@@ -6,7 +6,6 @@
 import type {
   OpenAlexResponse,
   GroupByResponse,
-  AutocompleteResponse,
 } from '../types/openalex';
 
 export interface FetcherOptions {
@@ -42,7 +41,7 @@ export class OpenAlexFetcher {
       const response = await fetch(url, {
         signal: controller.signal,
         headers: {
-          'User-Agent': 'OpenAlexWorker/1.0 (Cloudflare Worker)',
+          'User-Agent': 'OpenAlexMCP/1.0 (Cloudflare Worker)',
         },
       });
 
@@ -94,13 +93,6 @@ export class OpenAlexFetcher {
    */
   async fetchGroupBy(url: string): Promise<GroupByResponse> {
     return this.fetch<GroupByResponse>(url);
-  }
-
-  /**
-   * Fetch autocomplete results
-   */
-  async fetchAutocomplete(url: string): Promise<AutocompleteResponse> {
-    return this.fetch<AutocompleteResponse>(url);
   }
 }
 
