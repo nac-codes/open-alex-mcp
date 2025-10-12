@@ -146,8 +146,10 @@ this.server.tool(
 - `search_works`: Search for papers, articles, books (supports `verbose` parameter)
 - `search_authors`: Search for author profiles (supports `verbose` parameter)
 - `search_institutions`: Search for universities, research institutes (supports `verbose` parameter)
+- `search_sources`: Search for journals, repositories, conferences (supports `verbose` parameter)
 - `get_work_by_id`: Get detailed work information by OpenAlex ID or DOI
 - `get_author_by_id`: Get detailed author information by OpenAlex ID or ORCID
+- `get_source_by_id`: Get detailed source information by OpenAlex ID or ISSN
 
 ## Concise Mode (Default Behavior)
 
@@ -174,6 +176,11 @@ id,display_name,orcid,works_count,cited_by_count,last_known_institutions
 **search_institutions** (concise):
 ```
 id,display_name,country_code,works_count,cited_by_count,type
+```
+
+**search_sources** (concise):
+```
+id,display_name,type,host_organization_name,works_count,cited_by_count,is_oa,country_code
 ```
 
 ### Implementation Example
@@ -246,6 +253,22 @@ The server supports all OpenAlex entity types (defined in `EntityType` union):
 - `funders`: Funding organizations
 - `keywords`: Keywords
 - `geo`: Geographic data
+
+### Sources Breakdown
+
+OpenAlex contains **260,788 sources** (as of 2025-10) broken down by type:
+- **Journals**: 209,798 (80.5%)
+- **Ebook Platforms**: 28,966 (11.1%)
+- **Conferences**: 10,939 (4.2%)
+- **Book Series**: 6,978 (2.7%)
+- **Repositories**: 3,979 (1.5%)
+- **Other**: 120
+- **Metadata**: 2
+
+Query examples:
+- All journals: `filter=type:journal`
+- Open access repositories: `filter=type:repository,is_oa:true`
+- High-impact journals: `filter=type:journal&sort=cited_by_count:desc`
 
 ### Query Parameters
 

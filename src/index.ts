@@ -155,6 +155,52 @@ export class OpenAlexMCP extends McpAgent {
 			}
 		);
 
+		// Search for sources (journals, repositories, conferences, etc.)
+		this.server.tool(
+			"search_sources",
+			{
+				query: z.string().describe("Search query for sources (journals, repositories, conferences)"),
+				filter: z.string().optional().describe("Filter string (e.g., 'type:journal', 'is_oa:true')"),
+				sort: z.string().optional().describe("Sort field (e.g., 'works_count:desc')"),
+				per_page: z.number().optional().default(10).describe("Number of results per page (default: 10, max: 200)"),
+				verbose: z.boolean().optional().default(false).describe("Return full details (default: false, returns concise results)"),
+			},
+			async ({ query, filter, sort, per_page, verbose }) => {
+				try {
+					const mailto = (this.env as Env)?.OPENALEX_EMAIL;
+
+					// Concise mode by default - only return essential fields
+					const select = verbose ? undefined : "id,display_name,type,host_organization_name,works_count,cited_by_count,is_oa,country_code";
+
+					const params = {
+						search: query,
+						filter,
+						sort,
+						per_page,
+						select,
+						mailto,
+					};
+
+					const apiUrl = QueryBuilder.buildFromParams("sources", params);
+					const data = await fetcher.fetchList(apiUrl);
+
+					return {
+						content: [{
+							type: "text",
+							text: JSON.stringify(data, null, 2)
+						}],
+					};
+				} catch (error) {
+					const errorMsg = error instanceof OpenAlexError
+						? `OpenAlex API Error: ${error.message}`
+						: `Error: ${String(error)}`;
+					return {
+						content: [{ type: "text", text: errorMsg }],
+					};
+				}
+			}
+		);
+
 		// Get detailed information about a specific work by ID
 		this.server.tool(
 			"get_work_by_id",
@@ -198,6 +244,37 @@ export class OpenAlexMCP extends McpAgent {
 					const params = { mailto };
 
 					const apiUrl = QueryBuilder.buildFromParams("authors", params, author_id);
+					const data = await fetcher.fetchEntity(apiUrl);
+
+					return {
+						content: [{
+							type: "text",
+							text: JSON.stringify(data, null, 2)
+						}],
+					};
+				} catch (error) {
+					const errorMsg = error instanceof OpenAlexError
+						? `OpenAlex API Error: ${error.message}`
+						: `Error: ${String(error)}`;
+					return {
+						content: [{ type: "text", text: errorMsg }],
+					};
+				}
+			}
+		);
+
+		// Get detailed information about a source by ID
+		this.server.tool(
+			"get_source_by_id",
+			{
+				source_id: z.string().describe("OpenAlex source ID (e.g., 'S137773608') or ISSN"),
+			},
+			async ({ source_id }) => {
+				try {
+					const mailto = (this.env as Env)?.OPENALEX_EMAIL;
+					const params = { mailto };
+
+					const apiUrl = QueryBuilder.buildFromParams("sources", params, source_id);
 					const data = await fetcher.fetchEntity(apiUrl);
 
 					return {
